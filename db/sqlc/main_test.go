@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	_ "github.com/lib/pq"
-	"github.com/toannguyen3105/nht-socmanga.com-api/utils"
+	"github.com/toannguyen3105/nht-bsihuyen.com-api/utils"
 )
 
 var testQueries *Queries

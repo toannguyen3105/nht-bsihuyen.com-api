@@ -13,10 +13,10 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
-	mockdb "github.com/toannguyen3105/nht-socmanga.com-api/db/mock"
-	db "github.com/toannguyen3105/nht-socmanga.com-api/db/sqlc"
-	"github.com/toannguyen3105/nht-socmanga.com-api/token"
-	"github.com/toannguyen3105/nht-socmanga.com-api/utils"
+	mockdb "github.com/toannguyen3105/nht-bsihuyen.com-api/db/mock"
+	db "github.com/toannguyen3105/nht-bsihuyen.com-api/db/sqlc"
+	"github.com/toannguyen3105/nht-bsihuyen.com-api/token"
+	"github.com/toannguyen3105/nht-bsihuyen.com-api/utils"
 )
 
 func TestCreateAccount(t *testing.T) {

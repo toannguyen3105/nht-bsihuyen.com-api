@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/toannguyen3105/nht-socmanga.com-api/api"
-	db "github.com/toannguyen3105/nht-socmanga.com-api/db/sqlc"
-	"github.com/toannguyen3105/nht-socmanga.com-api/utils"
+	"github.com/toannguyen3105/nht-bsihuyen.com-api/api"
+	db "github.com/toannguyen3105/nht-bsihuyen.com-api/db/sqlc"
+	"github.com/toannguyen3105/nht-bsihuyen.com-api/utils"
 
 	_ "github.com/lib/pq"
 )

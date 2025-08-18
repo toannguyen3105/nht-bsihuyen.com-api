@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/toannguyen3105/nht-socmanga.com-api/utils"
+	"github.com/toannguyen3105/nht-bsihuyen.com-api/utils"
 )
 
 var validCurrency validator.Func = func(fieldLevel validator.FieldLevel) bool {
