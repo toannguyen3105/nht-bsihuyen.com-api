@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # --- Configuration variables ---
-DOMAIN="api.socmanga.diseasevault.cloud"
+DOMAIN="api.bsihuyen.diseasevault.cloud"
 # DOMAIN="api.socmanga.com"
 DOMAIN_NGINX_CONF="$DOMAIN.conf"
 EMAIL="nguyenhuytoan1994@gmail.com"
 WEB_ROOT="/var/www/html/$DOMAIN/backend"
 NGINX_CONF="/etc/nginx/sites-available/$DOMAIN_NGINX_CONF"
 NGINX_LINK="/etc/nginx/sites-enabled/$DOMAIN_NGINX_CONF"
-GITHUB_REPO="git@github.com:toannguyen3105/nht-socmanga.com-api.git"
+GITHUB_REPO="git@github.com:toannguyen3105/nht-bsihuyen.com-api.git"
 APP_NAME="$DOMAIN"
-PORT=9001
+PORT=9005
 ENV_FILE="app.env"
 
 # --- Clone the GOLANG project from GitHub ---

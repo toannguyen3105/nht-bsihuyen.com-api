@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- Configuration variables ---
-DOMAIN="api.socmanga.diseasevault.cloud"
+DOMAIN="api.bsihuyen.diseasevault.cloud"
 APP_NAME="$DOMAIN"
 DOMAIN_NGINX_CONF="$DOMAIN.conf"
 WEB_ROOT="/var/www/html/$DOMAIN/backend"
