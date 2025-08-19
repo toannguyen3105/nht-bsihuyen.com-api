@@ -56,7 +56,11 @@ func (server *Server) setupRouter() {
 
 	authRoutes.POST("/transfers", server.createTransfer)
 
-	authRoutes.POST("/roles", server.createRole)
+		authRoutes.POST("/roles", server.requireAuthorization("admin"), server.createRole)
+	authRoutes.GET("/roles", server.listRoles)
+	authRoutes.GET("/roles/:id", server.getRole)
+	authRoutes.PUT("/roles/:id", server.requireAuthorization("admin"), server.updateRole)
+	authRoutes.DELETE("/roles/:id", server.requireAuthorization("admin"), server.deleteRole)
 
 	authRoutes.POST("/permissions", server.createPermission)
 

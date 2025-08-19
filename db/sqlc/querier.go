@@ -12,6 +12,7 @@ import (
 
 type Querier interface {
 	AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error)
+	AddRoleForUser(ctx context.Context, arg AddRoleForUserParams) (UserRole, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
 	CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error)
 	CreatePermission(ctx context.Context, arg CreatePermissionParams) (Permission, error)
@@ -28,6 +29,7 @@ type Querier interface {
 	GetAccountForUpdate(ctx context.Context, id int64) (Account, error)
 	GetEntry(ctx context.Context, id int64) (Entry, error)
 	GetRole(ctx context.Context, id int32) (Role, error)
+	GetRolesForUser(ctx context.Context, userID int32) ([]Role, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	GetTransfer(ctx context.Context, id int64) (Transfer, error)
 	GetUser(ctx context.Context, username string) (User, error)

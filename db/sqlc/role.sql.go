@@ -108,18 +108,22 @@ func (q *Queries) ListRoles(ctx context.Context, arg ListRolesParams) ([]Role, e
 
 const updateRole = `-- name: UpdateRole :one
 UPDATE roles
-SET name = $2
-WHERE id = $1
+SET 
+    name = COALESCE($1, name),
+    description = COALESCE($2, description),
+    updated_at = now()
+WHERE id = $3
 RETURNING id, name, description, created_at, updated_at
 `
 
 type UpdateRoleParams struct {
-	ID   int32  `json:"id"`
-	Name string `json:"name"`
+	Name        sql.NullString `json:"name"`
+	Description sql.NullString `json:"description"`
+	ID          int32          `json:"id"`
 }
 
 func (q *Queries) UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error) {
-	row := q.db.QueryRowContext(ctx, updateRole, arg.ID, arg.Name)
+	row := q.db.QueryRowContext(ctx, updateRole, arg.Name, arg.Description, arg.ID)
 	var i Role
 	err := row.Scan(
 		&i.ID,

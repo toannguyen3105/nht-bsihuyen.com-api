@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 	"strings"
@@ -46,6 +47,61 @@ func authMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		}
 
 		ctx.Set(authorizationPayloadKey, payload)
+		ctx.Next()
+	}
+}
+
+func (server *Server) requireAuthorization(requiredRole string) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		payload, exists := ctx.Get(authorizationPayloadKey)
+		if !exists {
+			err := errors.New("authorization payload does not exist")
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			return
+		}
+
+		authPayload, ok := payload.(*token.Payload)
+		if !ok {
+			err := errors.New("invalid authorization payload")
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			return
+		}
+
+		user, err := server.store.GetUser(ctx, authPayload.Username)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				ctx.AbortWithStatusJSON(http.StatusNotFound, errorResponse(err))
+				return
+			}
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		roles, err := server.store.GetRolesForUser(ctx, user.ID)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				err := errors.New("user has no roles")
+				ctx.AbortWithStatusJSON(http.StatusForbidden, errorResponse(err))
+				return
+			}
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		hasPermission := false
+		for _, role := range roles {
+			if role.Name == requiredRole {
+				hasPermission = true
+				break
+			}
+		}
+
+		if !hasPermission {
+			err := errors.New("user does not have the required permission")
+			ctx.AbortWithStatusJSON(http.StatusForbidden, errorResponse(err))
+			return
+		}
+
 		ctx.Next()
 	}
 }

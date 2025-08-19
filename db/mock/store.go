@@ -51,6 +51,21 @@ func (mr *MockStoreMockRecorder) AddAccountBalance(arg0, arg1 interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAccountBalance", reflect.TypeOf((*MockStore)(nil).AddAccountBalance), arg0, arg1)
 }
 
+// AddRoleForUser mocks base method.
+func (m *MockStore) AddRoleForUser(arg0 context.Context, arg1 db.AddRoleForUserParams) (db.UserRole, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddRoleForUser", arg0, arg1)
+	ret0, _ := ret[0].(db.UserRole)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddRoleForUser indicates an expected call of AddRoleForUser.
+func (mr *MockStoreMockRecorder) AddRoleForUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleForUser", reflect.TypeOf((*MockStore)(nil).AddRoleForUser), arg0, arg1)
+}
+
 // CreateAccount mocks base method.
 func (m *MockStore) CreateAccount(arg0 context.Context, arg1 db.CreateAccountParams) (db.Account, error) {
 	m.ctrl.T.Helper()
@@ -285,6 +300,21 @@ func (m *MockStore) GetRole(arg0 context.Context, arg1 int32) (db.Role, error) {
 func (mr *MockStoreMockRecorder) GetRole(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRole", reflect.TypeOf((*MockStore)(nil).GetRole), arg0, arg1)
+}
+
+// GetRolesForUser mocks base method.
+func (m *MockStore) GetRolesForUser(arg0 context.Context, arg1 int32) ([]db.Role, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRolesForUser", arg0, arg1)
+	ret0, _ := ret[0].([]db.Role)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRolesForUser indicates an expected call of GetRolesForUser.
+func (mr *MockStoreMockRecorder) GetRolesForUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRolesForUser", reflect.TypeOf((*MockStore)(nil).GetRolesForUser), arg0, arg1)
 }
 
 // GetSession mocks base method.

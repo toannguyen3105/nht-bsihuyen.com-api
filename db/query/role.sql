@@ -18,8 +18,11 @@ OFFSET $2;
 
 -- name: UpdateRole :one
 UPDATE roles
-SET name = $2
-WHERE id = $1
+SET 
+    name = COALESCE(sqlc.narg(name), name),
+    description = COALESCE(sqlc.narg(description), description),
+    updated_at = now()
+WHERE id = sqlc.arg(id)
 RETURNING *;
 
 -- name: DeleteRole :exec
