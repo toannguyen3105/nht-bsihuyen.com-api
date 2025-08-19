@@ -1,3 +1,4 @@
+DROP TRIGGER IF EXISTS trg_users_updated_at ON users;
 DROP TRIGGER IF EXISTS trg_user_roles_updated_at ON user_roles;
 DROP TRIGGER IF EXISTS trg_role_permissions_updated_at ON role_permissions;
 DROP TRIGGER IF EXISTS trg_permissions_updated_at ON permissions;

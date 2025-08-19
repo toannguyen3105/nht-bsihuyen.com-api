@@ -56,6 +56,12 @@ func (server *Server) setupRouter() {
 
 	authRoutes.POST("/transfers", server.createTransfer)
 
+	authRoutes.POST("/roles", server.createRole)
+
+	authRoutes.POST("/permissions", server.createPermission)
+
+	authRoutes.POST("/role_permissions", server.createRolePermission)
+
 	// For testing
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "pong"})
