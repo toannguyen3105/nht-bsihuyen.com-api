@@ -422,6 +422,35 @@ func (mr *MockStoreMockRecorder) ListTransfers(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTransfers", reflect.TypeOf((*MockStore)(nil).ListTransfers), arg0, arg1)
 }
 
+// ListUserRoles mocks base method.
+func (m *MockStore) ListUserRoles(arg0 context.Context, arg1 db.ListUserRolesParams) ([]db.UserRole, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListUserRoles", arg0, arg1)
+	ret0, _ := ret[0].([]db.UserRole)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListUserRoles indicates an expected call of ListUserRoles.
+func (mr *MockStoreMockRecorder) ListUserRoles(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUserRoles", reflect.TypeOf((*MockStore)(nil).ListUserRoles), arg0, arg1)
+}
+
+// RemoveRoleForUser mocks base method.
+func (m *MockStore) RemoveRoleForUser(arg0 context.Context, arg1 db.RemoveRoleForUserParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveRoleForUser", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveRoleForUser indicates an expected call of RemoveRoleForUser.
+func (mr *MockStoreMockRecorder) RemoveRoleForUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveRoleForUser", reflect.TypeOf((*MockStore)(nil).RemoveRoleForUser), arg0, arg1)
+}
+
 // TransferTx mocks base method.
 func (m *MockStore) TransferTx(arg0 context.Context, arg1 db.TransferTxParams) (db.TransferTxResult, error) {
 	m.ctrl.T.Helper()

@@ -10,3 +10,13 @@ INSERT INTO user_roles (
 ) VALUES (
   $1, $2
 ) RETURNING *;
+
+-- name: RemoveRoleForUser :exec
+DELETE FROM user_roles
+WHERE user_id = $1 AND role_id = $2;
+
+-- name: ListUserRoles :many
+SELECT * FROM user_roles
+ORDER BY user_id, role_id
+LIMIT $1
+OFFSET $2;

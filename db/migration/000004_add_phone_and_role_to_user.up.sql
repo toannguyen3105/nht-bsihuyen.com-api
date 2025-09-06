@@ -70,15 +70,15 @@ EXECUTE FUNCTION set_updated_at();
 
 -- Seed dữ liệu mẫu cho roles
 INSERT INTO roles (name, description) VALUES
-('admin', 'Quản trị hệ thống'),
-('doctor', 'Bác sĩ'),
-('nurse', 'Điều dưỡng');
+('admin', 'Admin'),
+('doctor', 'Doctor'),
+('nurse', 'Nurse');
 
 -- Seed dữ liệu mẫu cho permissions (màn hình)
 INSERT INTO permissions (name, description) VALUES
-('VIEW_SCREEN_1', 'Truy cập màn hình 1'),
-('VIEW_SCREEN_2', 'Truy cập màn hình 2'),
-('VIEW_SCREEN_3', 'Truy cập màn hình 3');
+('VIEW_SCREEN_DASHBOARD', 'Access screen dashboard'),
+('VIEW_SCREEN_USER', 'Access screen user'),
+('VIEW_SCREEN_ROLE', 'Access screen role');
 
 -- Mapping role ↔ permission
 -- admin: screen 1,2,3
@@ -91,12 +91,12 @@ WHERE r.name = 'admin';
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r
-JOIN permissions p ON p.name IN ('VIEW_SCREEN_1','VIEW_SCREEN_2')
+JOIN permissions p ON p.name IN ('VIEW_SCREEN_DASHBOARD','VIEW_SCREEN_USER')
 WHERE r.name = 'doctor';
 
 -- nurse: screen 2,3
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r
-JOIN permissions p ON p.name IN ('VIEW_SCREEN_2','VIEW_SCREEN_3')
+JOIN permissions p ON p.name IN ('VIEW_SCREEN_DASHBOARD','VIEW_SCREEN_ROLE')
 WHERE r.name = 'nurse';

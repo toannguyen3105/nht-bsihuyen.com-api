@@ -20,20 +20,26 @@ type createUserRequest struct {
 }
 
 type userResponse struct {
+	ID                int32     `json:"id"`
 	Username          string    `json:"username"`
 	FullName          string    `json:"full_name"`
 	Email             string    `json:"email"`
+	Phone             string    `json:"phone"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
 	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
 }
 
 func newUserResponse(user db.User) userResponse {
 	return userResponse{
+		ID:                user.ID,
 		Username:          user.Username,
 		FullName:          user.FullName,
 		Email:             user.Email,
+		Phone:             user.Phone.String,
 		PasswordChangedAt: user.PasswordChangedAt,
 		CreatedAt:         user.CreatedAt,
+		UpdatedAt:         user.UpdatedAt,
 	}
 }
 

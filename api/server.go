@@ -56,15 +56,20 @@ func (server *Server) setupRouter() {
 
 	authRoutes.POST("/transfers", server.createTransfer)
 
-		authRoutes.POST("/roles", server.requireAuthorization("admin"), server.createRole)
-	authRoutes.GET("/roles", server.listRoles)
-	authRoutes.GET("/roles/:id", server.getRole)
+	authRoutes.POST("/roles", server.requireAuthorization("admin"), server.createRole)
+	authRoutes.GET("/roles", server.requireAuthorization("admin"), server.listRoles)
+	authRoutes.GET("/roles/:id", server.requireAuthorization("admin"), server.getRole)
 	authRoutes.PUT("/roles/:id", server.requireAuthorization("admin"), server.updateRole)
 	authRoutes.DELETE("/roles/:id", server.requireAuthorization("admin"), server.deleteRole)
 
 	authRoutes.POST("/permissions", server.createPermission)
 
 	authRoutes.POST("/role_permissions", server.createRolePermission)
+
+	authRoutes.POST("/user-roles", server.requireAuthorization("admin"), server.addUserRole)
+	authRoutes.GET("/users/:id/roles", server.requireAuthorization("admin"), server.getUserRoles)
+	authRoutes.DELETE("/user-roles", server.requireAuthorization("admin"), server.deleteUserRole)
+	authRoutes.GET("/user-roles", server.requireAuthorization("admin"), server.listUserRoles)
 
 	// For testing
 	router.GET("/ping", func(c *gin.Context) {
