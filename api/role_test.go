@@ -46,9 +46,9 @@ func TestCreateRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_ROLE"}, nil)
 				arg := db.CreateRoleParams{
 					Name:        role.Name,
 					Description: role.Description,
@@ -78,9 +78,9 @@ func TestCreateRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_ROLE"}, nil)
 				store.EXPECT().
 					CreateRole(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -104,9 +104,9 @@ func TestCreateRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_ROLE"}, nil)
 				store.EXPECT().
 					CreateRole(gomock.Any(), gomock.Any()).
 					Times(0)
@@ -130,9 +130,9 @@ func TestCreateRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_ROLE"}, nil)
 				store.EXPECT().
 					CreateRole(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -224,9 +224,9 @@ func TestListRoles(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_ROLE"}, nil)
 				arg := db.ListRolesParams{
 					Limit:  10,
 					Offset: 0,
@@ -270,9 +270,9 @@ func TestListRoles(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "user"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER"}, nil)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusForbidden, recorder.Code)
@@ -290,9 +290,9 @@ func TestListRoles(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_ROLE"}, nil)
 				store.EXPECT().
 					ListRoles(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -314,9 +314,9 @@ func TestListRoles(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_ROLE"}, nil)
 				store.EXPECT().
 					ListRoles(gomock.Any(), gomock.Any()).
 					Times(0)
