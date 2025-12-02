@@ -35,6 +35,17 @@ func (q *Queries) AddRoleForUser(ctx context.Context, arg AddRoleForUserParams) 
 	return i, err
 }
 
+const countUserRoles = `-- name: CountUserRoles :one
+SELECT count(*) FROM user_roles
+`
+
+func (q *Queries) CountUserRoles(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countUserRoles)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getRolesForUser = `-- name: GetRolesForUser :many
 SELECT roles.id, roles.name, roles.description, roles.created_at, roles.updated_at FROM roles
 JOIN user_roles ON roles.id = user_roles.role_id

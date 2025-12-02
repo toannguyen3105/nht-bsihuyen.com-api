@@ -20,3 +20,6 @@ SELECT * FROM user_roles
 ORDER BY user_id, role_id
 LIMIT $1
 OFFSET $2;
+
+-- name: CountUserRoles :one
+SELECT count(*) FROM user_roles;

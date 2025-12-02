@@ -111,6 +111,21 @@ func (mr *MockStoreMockRecorder) CountRoles(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountRoles", reflect.TypeOf((*MockStore)(nil).CountRoles), arg0)
 }
 
+// CountUserRoles mocks base method.
+func (m *MockStore) CountUserRoles(arg0 context.Context) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountUserRoles", arg0)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountUserRoles indicates an expected call of CountUserRoles.
+func (mr *MockStoreMockRecorder) CountUserRoles(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountUserRoles", reflect.TypeOf((*MockStore)(nil).CountUserRoles), arg0)
+}
+
 // CountUsers mocks base method.
 func (m *MockStore) CountUsers(arg0 context.Context) (int64, error) {
 	m.ctrl.T.Helper()
@@ -732,4 +747,19 @@ func (m *MockStore) UpdateTransfer(arg0 context.Context, arg1 db.UpdateTransferP
 func (mr *MockStoreMockRecorder) UpdateTransfer(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTransfer", reflect.TypeOf((*MockStore)(nil).UpdateTransfer), arg0, arg1)
+}
+
+// UpdateUserRoleTx mocks base method.
+func (m *MockStore) UpdateUserRoleTx(arg0 context.Context, arg1 db.UpdateUserRoleTxParams) (db.UpdateUserRoleTxResult, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateUserRoleTx", arg0, arg1)
+	ret0, _ := ret[0].(db.UpdateUserRoleTxResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateUserRoleTx indicates an expected call of UpdateUserRoleTx.
+func (mr *MockStoreMockRecorder) UpdateUserRoleTx(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserRoleTx", reflect.TypeOf((*MockStore)(nil).UpdateUserRoleTx), arg0, arg1)
 }

@@ -16,6 +16,7 @@ type Querier interface {
 	CountPermissions(ctx context.Context) (int64, error)
 	CountRolePermissions(ctx context.Context) (int64, error)
 	CountRoles(ctx context.Context) (int64, error)
+	CountUserRoles(ctx context.Context) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
 	CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error)

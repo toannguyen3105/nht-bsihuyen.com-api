@@ -82,10 +82,11 @@ func (server *Server) setupRouter() {
 	authRoutes.PUT("/role_permissions/:role_id/:permission_id", server.requirePermission("VIEW_SCREEN_ROLE_PERMISSION"), server.updateRolePermission)
 	authRoutes.DELETE("/role_permissions/:role_id/:permission_id", server.requirePermission("VIEW_SCREEN_ROLE_PERMISSION"), server.deleteRolePermission)
 
-	authRoutes.POST("/user-roles", server.requireAuthorization("admin"), server.addUserRole)
-	authRoutes.GET("/users/:id/roles", server.requireAuthorization("admin"), server.getUserRoles)
-	authRoutes.DELETE("/user-roles", server.requireAuthorization("admin"), server.deleteUserRole)
-	authRoutes.GET("/user-roles", server.requireAuthorization("admin"), server.listUserRoles)
+	authRoutes.POST("/user-roles", server.requirePermission("VIEW_SCREEN_USER_ROLE"), server.addUserRole)
+	authRoutes.GET("/users/:id/roles", server.requirePermission("VIEW_SCREEN_USER_ROLE"), server.getUserRoles)
+	authRoutes.DELETE("/user-roles", server.requirePermission("VIEW_SCREEN_USER_ROLE"), server.deleteUserRole)
+	authRoutes.PUT("/user-roles", server.requirePermission("VIEW_SCREEN_USER_ROLE"), server.updateUserRole)
+	authRoutes.GET("/user-roles", server.requirePermission("VIEW_SCREEN_USER_ROLE"), server.listUserRoles)
 
 	// For testing
 	router.GET("/ping", func(c *gin.Context) {

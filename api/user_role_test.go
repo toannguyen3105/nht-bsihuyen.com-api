@@ -23,6 +23,8 @@ import (
 func TestAddUserRoleAPI(t *testing.T) {
 	user, _ := randomUser(t)
 	role := randomRole()
+	user.ID = 10
+	role.ID = 11
 
 	userRole := db.UserRole{
 		UserID: user.ID,
@@ -51,9 +53,9 @@ func TestAddUserRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				arg := db.AddRoleForUserParams{
 					UserID: userRole.UserID,
 					RoleID: userRole.RoleID,
@@ -83,9 +85,9 @@ func TestAddUserRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				store.EXPECT().
 					AddRoleForUser(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -110,9 +112,9 @@ func TestAddUserRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				store.EXPECT().
 					AddRoleForUser(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -169,6 +171,9 @@ func TestGetUserRolesAPI(t *testing.T) {
 	user, _ := randomUser(t)
 	role1 := randomRole()
 	role2 := randomRole()
+	user.ID = 10
+	role1.ID = 11
+	role2.ID = 12
 
 	roles := []db.Role{role1, role2}
 
@@ -191,8 +196,12 @@ func TestGetUserRolesAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
+				store.EXPECT().
 					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
-					Times(2).
+					Times(1).
 					Return(roles, nil)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
@@ -212,9 +221,9 @@ func TestGetUserRolesAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				store.EXPECT().
 					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
@@ -236,9 +245,9 @@ func TestGetUserRolesAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				store.EXPECT().
 					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
@@ -255,6 +264,14 @@ func TestGetUserRolesAPI(t *testing.T) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 			},
 			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(user.Username)).
+					Times(1).
+					Return(user, nil)
+				store.EXPECT().
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				store.EXPECT().
 					GetRolesForUser(gomock.Any(), gomock.Any()).
 					Times(0)
@@ -293,25 +310,38 @@ func requireBodyMatchUserRole(t *testing.T, body *bytes.Buffer, userRole db.User
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotUserRole db.UserRole
-	err = json.Unmarshal(data, &gotUserRole)
+	var response struct {
+		Data db.UserRole `json:"data"`
+	}
+	err = json.Unmarshal(data, &response)
 	require.NoError(t, err)
-	require.Equal(t, userRole, gotUserRole)
+	require.Equal(t, userRole, response.Data)
 }
 
 func requireBodyMatchRoles(t *testing.T, body *bytes.Buffer, roles []db.Role) {
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotRoles []db.Role
-	err = json.Unmarshal(data, &gotRoles)
+	var response struct {
+		Data []roleResponse `json:"data"`
+	}
+	err = json.Unmarshal(data, &response)
 	require.NoError(t, err)
-	require.Equal(t, roles, gotRoles)
+
+	// Convert expected roles to roleResponse for comparison
+	expected := make([]roleResponse, len(roles))
+	for i, role := range roles {
+		expected[i] = newRoleResponse(role)
+	}
+
+	require.Equal(t, expected, response.Data)
 }
 
 func TestDeleteUserRoleAPI(t *testing.T) {
 	user, _ := randomUser(t)
 	role := randomRole()
+	user.ID = 10
+	role.ID = 11
 
 	userRole := db.UserRole{
 		UserID: user.ID,
@@ -340,9 +370,9 @@ func TestDeleteUserRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				arg := db.RemoveRoleForUserParams{
 					UserID: userRole.UserID,
 					RoleID: userRole.RoleID,
@@ -371,9 +401,9 @@ func TestDeleteUserRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				store.EXPECT().
 					RemoveRoleForUser(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -398,9 +428,9 @@ func TestDeleteUserRoleAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				store.EXPECT().
 					RemoveRoleForUser(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -439,9 +469,121 @@ func TestDeleteUserRoleAPI(t *testing.T) {
 	}
 }
 
+func TestUpdateUserRoleAPI(t *testing.T) {
+	user, _ := randomUser(t)
+	oldRole := randomRole()
+	newRole := randomRole()
+	user.ID = 10
+	oldRole.ID = 11
+	newRole.ID = 12
+
+	userRole := db.UserRole{
+		UserID: user.ID,
+		RoleID: newRole.ID,
+	}
+
+	testCases := []struct {
+		name          string
+		body          gin.H
+		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
+		buildStubs    func(store *mockdb.MockStore)
+		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
+	}{
+		{
+			name: "OK",
+			body: gin.H{
+				"user_id":     user.ID,
+				"old_role_id": oldRole.ID,
+				"new_role_id": newRole.ID,
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(user.Username)).
+					Times(1).
+					Return(user, nil)
+				store.EXPECT().
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
+
+				arg := db.UpdateUserRoleTxParams{
+					UserID:    user.ID,
+					OldRoleID: oldRole.ID,
+					NewRoleID: newRole.ID,
+				}
+				store.EXPECT().
+					UpdateUserRoleTx(gomock.Any(), gomock.Eq(arg)).
+					Times(1).
+					Return(db.UpdateUserRoleTxResult{UserRole: userRole}, nil)
+			},
+			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusOK, recorder.Code)
+				requireBodyMatchUserRole(t, recorder.Body, userRole)
+			},
+		},
+		{
+			name: "InternalError",
+			body: gin.H{
+				"user_id":     user.ID,
+				"old_role_id": oldRole.ID,
+				"new_role_id": newRole.ID,
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(user.Username)).
+					Times(1).
+					Return(user, nil)
+				store.EXPECT().
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
+				store.EXPECT().
+					UpdateUserRoleTx(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(db.UpdateUserRoleTxResult{}, sql.ErrConnDone)
+			},
+			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+			},
+		},
+	}
+
+	for i := range testCases {
+		tc := testCases[i]
+
+		t.Run(tc.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			store := mockdb.NewMockStore(ctrl)
+			tc.buildStubs(store)
+
+			server := newTestServer(t, store)
+			recorder := httptest.NewRecorder()
+
+			data, err := json.Marshal(tc.body)
+			require.NoError(t, err)
+
+			url := "/user-roles"
+			request, err := http.NewRequest(http.MethodPut, url, bytes.NewReader(data))
+			require.NoError(t, err)
+
+			tc.setupAuth(t, request, server.tokenMaker)
+			server.router.ServeHTTP(recorder, request)
+			tc.checkResponse(t, recorder)
+		})
+	}
+}
+
 func TestListUserRolesAPI(t *testing.T) {
 	user, _ := randomUser(t)
-	n := 5
+	n := 10
 	userRoles := make([]db.UserRole, n)
 	for i := 0; i < n; i++ {
 		userRoles[i] = db.UserRole{
@@ -477,9 +619,9 @@ func TestListUserRolesAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				arg := db.ListUserRolesParams{
 					Limit:  int32(n),
 					Offset: 0,
@@ -489,6 +631,11 @@ func TestListUserRolesAPI(t *testing.T) {
 					ListUserRoles(gomock.Any(), gomock.Eq(arg)).
 					Times(1).
 					Return(userRoles, nil)
+
+				store.EXPECT().
+					CountUserRoles(gomock.Any()).
+					Times(1).
+					Return(int64(n), nil)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
@@ -510,9 +657,9 @@ func TestListUserRolesAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 				store.EXPECT().
-					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
-					Return([]db.Role{{Name: "admin"}}, nil)
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
 				store.EXPECT().
 					ListUserRoles(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -533,6 +680,14 @@ func TestListUserRolesAPI(t *testing.T) {
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(user.Username)).
+					Times(1).
+					Return(user, nil)
+				store.EXPECT().
+					GetPermissionsForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]string{"VIEW_SCREEN_USER_ROLE"}, nil)
+				store.EXPECT().
 					ListUserRoles(gomock.Any(), gomock.Any()).
 					Times(0)
 			},
@@ -544,7 +699,6 @@ func TestListUserRolesAPI(t *testing.T) {
 
 	for i := range testCases {
 		tc := testCases[i]
-
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
@@ -575,8 +729,19 @@ func requireBodyMatchUserRoles(t *testing.T, body *bytes.Buffer, userRoles []db.
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotUserRoles []db.UserRole
-	err = json.Unmarshal(data, &gotUserRoles)
+	type userRolesResponse struct {
+		Meta struct {
+			Page       int32 `json:"page"`
+			TotalPages int32 `json:"total_pages"`
+			TotalCount int64 `json:"total_count"`
+		} `json:"meta"`
+		Data []db.UserRole `json:"data"`
+	}
+
+	var response struct {
+		Data userRolesResponse `json:"data"`
+	}
+	err = json.Unmarshal(data, &response)
 	require.NoError(t, err)
-	require.Equal(t, userRoles, gotUserRoles)
+	require.Equal(t, userRoles, response.Data.Data)
 }

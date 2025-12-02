@@ -9,6 +9,7 @@ import (
 type Store interface {
 	Querier
 	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+	UpdateUserRoleTx(ctx context.Context, arg UpdateUserRoleTxParams) (UpdateUserRoleTxResult, error)
 }
 
 type SQLStore struct {
@@ -61,11 +62,7 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tr
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 
-		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
-			FromAccountID: arg.FromAccountID,
-			ToAccountID:   arg.ToAccountID,
-			Amount:        arg.Amount,
-		})
+		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams(arg))
 
 		if err != nil {
 			return err
@@ -93,7 +90,7 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tr
 			result.ToAccount, result.FromAccount, err = addMoney(ctx, q, arg.ToAccountID, arg.Amount, arg.FromAccountID, -arg.Amount)
 		}
 
-		return nil
+		return err
 	})
 
 	return result, err
@@ -114,4 +111,40 @@ func addMoney(ctx context.Context, q *Queries, accountID1 int64, amount1 int64, 
 	})
 
 	return
+}
+
+type UpdateUserRoleTxParams struct {
+	UserID    int32 `json:"user_id"`
+	OldRoleID int32 `json:"old_role_id"`
+	NewRoleID int32 `json:"new_role_id"`
+}
+
+type UpdateUserRoleTxResult struct {
+	UserRole UserRole `json:"user_role"`
+}
+
+func (store *SQLStore) UpdateUserRoleTx(ctx context.Context, arg UpdateUserRoleTxParams) (UpdateUserRoleTxResult, error) {
+	var result UpdateUserRoleTxResult
+
+	err := store.execTx(ctx, func(q *Queries) error {
+		err := q.RemoveRoleForUser(ctx, RemoveRoleForUserParams{
+			UserID: arg.UserID,
+			RoleID: arg.OldRoleID,
+		})
+		if err != nil {
+			return err
+		}
+
+		result.UserRole, err = q.AddRoleForUser(ctx, AddRoleForUserParams{
+			UserID: arg.UserID,
+			RoleID: arg.NewRoleID,
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return result, err
 }
