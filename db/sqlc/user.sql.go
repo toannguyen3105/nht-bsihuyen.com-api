@@ -55,6 +55,37 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const getPermissionsForUser = `-- name: GetPermissionsForUser :many
+SELECT DISTINCT p.name
+FROM permissions p
+JOIN role_permissions rp ON p.id = rp.permission_id
+JOIN user_roles ur ON rp.role_id = ur.role_id
+WHERE ur.user_id = $1
+`
+
+func (q *Queries) GetPermissionsForUser(ctx context.Context, userID int32) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getPermissionsForUser, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []string{}
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUser = `-- name: GetUser :one
 SELECT id, username, hashed_password, full_name, email, phone, password_changed_at, created_at, updated_at FROM users
 WHERE username = $1 LIMIT 1

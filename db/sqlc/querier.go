@@ -30,6 +30,7 @@ type Querier interface {
 	GetAccount(ctx context.Context, id int64) (Account, error)
 	GetAccountForUpdate(ctx context.Context, id int64) (Account, error)
 	GetEntry(ctx context.Context, id int64) (Entry, error)
+	GetPermissionsForUser(ctx context.Context, userID int32) ([]string, error)
 	GetRole(ctx context.Context, id int32) (Role, error)
 	GetRolesForUser(ctx context.Context, userID int32) ([]Role, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)

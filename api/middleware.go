@@ -105,3 +105,58 @@ func (server *Server) requireAuthorization(requiredRole string) gin.HandlerFunc 
 		ctx.Next()
 	}
 }
+
+func (server *Server) requirePermission(requiredPermission string) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		payload, exists := ctx.Get(authorizationPayloadKey)
+		if !exists {
+			err := errors.New("authorization payload does not exist")
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			return
+		}
+
+		authPayload, ok := payload.(*token.Payload)
+		if !ok {
+			err := errors.New("invalid authorization payload")
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			return
+		}
+
+		user, err := server.store.GetUser(ctx, authPayload.Username)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				ctx.AbortWithStatusJSON(http.StatusNotFound, errorResponse(err))
+				return
+			}
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		permissions, err := server.store.GetPermissionsForUser(ctx, user.ID)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				err := errors.New("user has no permissions")
+				ctx.AbortWithStatusJSON(http.StatusForbidden, errorResponse(err))
+				return
+			}
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+
+		hasPermission := false
+		for _, permission := range permissions {
+			if permission == requiredPermission {
+				hasPermission = true
+				break
+			}
+		}
+
+		if !hasPermission {
+			err := errors.New("user does not have the required permission")
+			ctx.AbortWithStatusJSON(http.StatusForbidden, errorResponse(err))
+			return
+		}
+
+		ctx.Next()
+	}
+}

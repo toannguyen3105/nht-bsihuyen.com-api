@@ -317,6 +317,21 @@ func (mr *MockStoreMockRecorder) GetEntry(arg0, arg1 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEntry", reflect.TypeOf((*MockStore)(nil).GetEntry), arg0, arg1)
 }
 
+// GetPermissionsForUser mocks base method.
+func (m *MockStore) GetPermissionsForUser(arg0 context.Context, arg1 int32) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPermissionsForUser", arg0, arg1)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetPermissionsForUser indicates an expected call of GetPermissionsForUser.
+func (mr *MockStoreMockRecorder) GetPermissionsForUser(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPermissionsForUser", reflect.TypeOf((*MockStore)(nil).GetPermissionsForUser), arg0, arg1)
+}
+
 // GetRole mocks base method.
 func (m *MockStore) GetRole(arg0 context.Context, arg1 int32) (db.Role, error) {
 	m.ctrl.T.Helper()

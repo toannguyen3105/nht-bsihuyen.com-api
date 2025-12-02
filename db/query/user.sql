@@ -14,3 +14,10 @@ LIMIT $1 OFFSET $2;
 
 -- name: CountUsers :one
 SELECT count(*) FROM users;
+
+-- name: GetPermissionsForUser :many
+SELECT DISTINCT p.name
+FROM permissions p
+JOIN role_permissions rp ON p.id = rp.permission_id
+JOIN user_roles ur ON rp.role_id = ur.role_id
+WHERE ur.user_id = $1;
