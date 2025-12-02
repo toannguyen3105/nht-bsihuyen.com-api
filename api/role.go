@@ -11,8 +11,8 @@ import (
 )
 
 type createRoleRequest struct {
-	Name        string `json:"name" binding:"required"`
-	Description string `json:"description"`
+	Name        string `json:"name" binding:"required,alphanum,max=255"`
+	Description string `json:"description" binding:"max=255"`
 }
 
 type roleResponse struct {
@@ -90,7 +90,7 @@ func (server *Server) getRole(ctx *gin.Context) {
 
 type listRolesRequest struct {
 	PageID   int32 `form:"page_id" binding:"required,min=1"`
-	PageSize int32 `form:"page_size" binding:"required,min=5,max=20"`
+	PageSize int32 `form:"page_size" binding:"required,min=10,max=100"`
 }
 
 func (server *Server) listRoles(ctx *gin.Context) {
@@ -120,8 +120,8 @@ func (server *Server) listRoles(ctx *gin.Context) {
 }
 
 type updateRoleRequest struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name        string `json:"name" binding:"alphanum,max=255"`
+	Description string `json:"description" binding:"max=255"`
 }
 
 func (server *Server) updateRole(ctx *gin.Context) {

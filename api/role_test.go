@@ -41,6 +41,14 @@ func TestCreateRoleAPI(t *testing.T) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 			},
 			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(user.Username)).
+					Times(1).
+					Return(user, nil)
+				store.EXPECT().
+					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]db.Role{{Name: "admin"}}, nil)
 				arg := db.CreateRoleParams{
 					Name:        role.Name,
 					Description: role.Description,
@@ -66,6 +74,14 @@ func TestCreateRoleAPI(t *testing.T) {
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(user.Username)).
+					Times(1).
+					Return(user, nil)
+				store.EXPECT().
+					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]db.Role{{Name: "admin"}}, nil)
+				store.EXPECT().
 					CreateRole(gomock.Any(), gomock.Any()).
 					Times(1).
 					Return(db.Role{}, sql.ErrConnDone)
@@ -84,6 +100,14 @@ func TestCreateRoleAPI(t *testing.T) {
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(user.Username)).
+					Times(1).
+					Return(user, nil)
+				store.EXPECT().
+					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]db.Role{{Name: "admin"}}, nil)
+				store.EXPECT().
 					CreateRole(gomock.Any(), gomock.Any()).
 					Times(0)
 			},
@@ -101,6 +125,14 @@ func TestCreateRoleAPI(t *testing.T) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 			},
 			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(user.Username)).
+					Times(1).
+					Return(user, nil)
+				store.EXPECT().
+					GetRolesForUser(gomock.Any(), gomock.Eq(user.ID)).
+					Times(1).
+					Return([]db.Role{{Name: "admin"}}, nil)
 				store.EXPECT().
 					CreateRole(gomock.Any(), gomock.Any()).
 					Times(1).
@@ -169,8 +201,17 @@ func requireBodyMatchRole(t *testing.T, body *bytes.Buffer, role db.Role) {
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
-	var gotRole db.Role
-	err = json.Unmarshal(data, &gotRole)
+	var apiResponse APIResponse
+	err = json.Unmarshal(data, &apiResponse)
 	require.NoError(t, err)
-	require.Equal(t, role, gotRole)
+	require.Equal(t, "success", apiResponse.Status)
+
+	var gotRole roleResponse
+	jsonData, err := json.Marshal(apiResponse.Data)
+	require.NoError(t, err)
+	err = json.Unmarshal(jsonData, &gotRole)
+	require.NoError(t, err)
+
+	require.Equal(t, role.Name, gotRole.Name)
+	require.Equal(t, role.Description.String, gotRole.Description)
 }

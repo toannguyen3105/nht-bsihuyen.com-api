@@ -327,7 +327,7 @@ func TestLoginUser(t *testing.T) {
 
 func TestListUsers(t *testing.T) {
 	user, _ := randomUser(t)
-	n := 5
+	n := 10
 	users := make([]db.User, n)
 	for i := 0; i < n; i++ {
 		users[i], _ = randomUser(t)
@@ -342,7 +342,7 @@ func TestListUsers(t *testing.T) {
 	}{
 		{
 			name:  "OK",
-			query: "?page_id=1&page_size=5",
+			query: "?page_id=1&page_size=10",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 			},
@@ -356,7 +356,7 @@ func TestListUsers(t *testing.T) {
 					Times(1).
 					Return([]db.Role{{Name: "admin"}}, nil)
 				arg := db.ListUsersParams{
-					Limit:  5,
+					Limit:  10,
 					Offset: 0,
 				}
 				store.EXPECT().
@@ -370,7 +370,7 @@ func TestListUsers(t *testing.T) {
 		},
 		{
 			name:  "NoAuthorization",
-			query: "?page_id=1&page_size=5",
+			query: "?page_id=1&page_size=10",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 			},
 			buildStubs: func(store *mockdb.MockStore) {
@@ -384,7 +384,7 @@ func TestListUsers(t *testing.T) {
 		},
 		{
 			name:  "UnauthorizedUser",
-			query: "?page_id=1&page_size=5",
+			query: "?page_id=1&page_size=10",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 			},
@@ -404,7 +404,7 @@ func TestListUsers(t *testing.T) {
 		},
 		{
 			name:  "InternalError",
-			query: "?page_id=1&page_size=5",
+			query: "?page_id=1&page_size=10",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 			},
@@ -428,7 +428,7 @@ func TestListUsers(t *testing.T) {
 		},
 		{
 			name:  "InvalidPageID",
-			query: "?page_id=-1&page_size=5",
+			query: "?page_id=-1&page_size=10",
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
 				addAuthorization(t, request, tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 			},

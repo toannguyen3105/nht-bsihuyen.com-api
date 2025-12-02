@@ -13,10 +13,10 @@ import (
 )
 
 type createUserRequest struct {
-	Username string `json:"username" binding:"required,alphanum"`
-	Password string `json:"password" binding:"required,min=8"`
-	FullName string `json:"full_name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
+	Username string `json:"username" binding:"required,alphanum,max=255"`
+	Password string `json:"password" binding:"required,min=8,max=255"`
+	FullName string `json:"full_name" binding:"required,max=255"`
+	Email    string `json:"email" binding:"required,email,max=255"`
 }
 
 type userResponse struct {
@@ -81,8 +81,8 @@ func (server *Server) createUser(ctx *gin.Context) {
 }
 
 type loginUserRequest struct {
-	Username string `json:"username" binding:"required,alphanum"`
-	Password string `json:"password" binding:"required,min=6"`
+	Username string `json:"username" binding:"required,alphanum,max=255"`
+	Password string `json:"password" binding:"required,min=6,max=255"`
 }
 
 type loginUserResponse struct {
@@ -163,7 +163,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 
 type listUsersRequest struct {
 	PageID   int32 `form:"page_id" binding:"required,min=1"`
-	PageSize int32 `form:"page_size" binding:"required,min=5,max=10"`
+	PageSize int32 `form:"page_size" binding:"required,min=10,max=100"`
 }
 
 func (server *Server) listUsers(ctx *gin.Context) {
