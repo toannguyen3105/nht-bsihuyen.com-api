@@ -66,6 +66,21 @@ func (mr *MockStoreMockRecorder) AddRoleForUser(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleForUser", reflect.TypeOf((*MockStore)(nil).AddRoleForUser), arg0, arg1)
 }
 
+// CountMedicines mocks base method.
+func (m *MockStore) CountMedicines(arg0 context.Context) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountMedicines", arg0)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountMedicines indicates an expected call of CountMedicines.
+func (mr *MockStoreMockRecorder) CountMedicines(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountMedicines", reflect.TypeOf((*MockStore)(nil).CountMedicines), arg0)
+}
+
 // CountPermissions mocks base method.
 func (m *MockStore) CountPermissions(arg0 context.Context) (int64, error) {
 	m.ctrl.T.Helper()
@@ -169,6 +184,21 @@ func (m *MockStore) CreateEntry(arg0 context.Context, arg1 db.CreateEntryParams)
 func (mr *MockStoreMockRecorder) CreateEntry(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEntry", reflect.TypeOf((*MockStore)(nil).CreateEntry), arg0, arg1)
+}
+
+// CreateMedicine mocks base method.
+func (m *MockStore) CreateMedicine(arg0 context.Context, arg1 db.CreateMedicineParams) (db.Medicine, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateMedicine", arg0, arg1)
+	ret0, _ := ret[0].(db.Medicine)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateMedicine indicates an expected call of CreateMedicine.
+func (mr *MockStoreMockRecorder) CreateMedicine(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMedicine", reflect.TypeOf((*MockStore)(nil).CreateMedicine), arg0, arg1)
 }
 
 // CreatePermission mocks base method.
@@ -289,6 +319,20 @@ func (mr *MockStoreMockRecorder) DeleteEntry(arg0, arg1 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEntry", reflect.TypeOf((*MockStore)(nil).DeleteEntry), arg0, arg1)
 }
 
+// DeleteMedicine mocks base method.
+func (m *MockStore) DeleteMedicine(arg0 context.Context, arg1 int32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteMedicine", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteMedicine indicates an expected call of DeleteMedicine.
+func (mr *MockStoreMockRecorder) DeleteMedicine(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMedicine", reflect.TypeOf((*MockStore)(nil).DeleteMedicine), arg0, arg1)
+}
+
 // DeletePermission mocks base method.
 func (m *MockStore) DeletePermission(arg0 context.Context, arg1 int32) error {
 	m.ctrl.T.Helper()
@@ -388,6 +432,21 @@ func (m *MockStore) GetEntry(arg0 context.Context, arg1 int64) (db.Entry, error)
 func (mr *MockStoreMockRecorder) GetEntry(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEntry", reflect.TypeOf((*MockStore)(nil).GetEntry), arg0, arg1)
+}
+
+// GetMedicine mocks base method.
+func (m *MockStore) GetMedicine(arg0 context.Context, arg1 int32) (db.Medicine, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMedicine", arg0, arg1)
+	ret0, _ := ret[0].(db.Medicine)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMedicine indicates an expected call of GetMedicine.
+func (mr *MockStoreMockRecorder) GetMedicine(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMedicine", reflect.TypeOf((*MockStore)(nil).GetMedicine), arg0, arg1)
 }
 
 // GetPermission mocks base method.
@@ -540,6 +599,21 @@ func (mr *MockStoreMockRecorder) ListEntries(arg0, arg1 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEntries", reflect.TypeOf((*MockStore)(nil).ListEntries), arg0, arg1)
 }
 
+// ListMedicines mocks base method.
+func (m *MockStore) ListMedicines(arg0 context.Context, arg1 db.ListMedicinesParams) ([]db.Medicine, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListMedicines", arg0, arg1)
+	ret0, _ := ret[0].([]db.Medicine)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListMedicines indicates an expected call of ListMedicines.
+func (mr *MockStoreMockRecorder) ListMedicines(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMedicines", reflect.TypeOf((*MockStore)(nil).ListMedicines), arg0, arg1)
+}
+
 // ListPermissions mocks base method.
 func (m *MockStore) ListPermissions(arg0 context.Context, arg1 db.ListPermissionsParams) ([]db.Permission, error) {
 	m.ctrl.T.Helper()
@@ -687,6 +761,21 @@ func (m *MockStore) UpdateEntry(arg0 context.Context, arg1 db.UpdateEntryParams)
 func (mr *MockStoreMockRecorder) UpdateEntry(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEntry", reflect.TypeOf((*MockStore)(nil).UpdateEntry), arg0, arg1)
+}
+
+// UpdateMedicine mocks base method.
+func (m *MockStore) UpdateMedicine(arg0 context.Context, arg1 db.UpdateMedicineParams) (db.Medicine, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateMedicine", arg0, arg1)
+	ret0, _ := ret[0].(db.Medicine)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateMedicine indicates an expected call of UpdateMedicine.
+func (mr *MockStoreMockRecorder) UpdateMedicine(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMedicine", reflect.TypeOf((*MockStore)(nil).UpdateMedicine), arg0, arg1)
 }
 
 // UpdatePermission mocks base method.

@@ -78,6 +78,12 @@ func (server *Server) setupRouter() {
 
 	authRoutes.POST("/role_permissions", server.requirePermission("VIEW_SCREEN_ROLE_PERMISSION"), server.createRolePermission)
 	authRoutes.GET("/role_permissions", server.requirePermission("VIEW_SCREEN_ROLE_PERMISSION"), server.listRolePermissions)
+
+	authRoutes.POST("/medicines", server.requirePermission("VIEW_SCREEN_MEDICINE"), server.createMedicine)
+	authRoutes.GET("/medicines/:id", server.requirePermission("VIEW_SCREEN_MEDICINE"), server.getMedicine)
+	authRoutes.GET("/medicines", server.requirePermission("VIEW_SCREEN_MEDICINE"), server.listMedicines)
+	authRoutes.PUT("/medicines/:id", server.requirePermission("VIEW_SCREEN_MEDICINE"), server.updateMedicine)
+	authRoutes.DELETE("/medicines/:id", server.requirePermission("VIEW_SCREEN_MEDICINE"), server.deleteMedicine)
 	authRoutes.GET("/role_permissions/:role_id/:permission_id", server.requirePermission("VIEW_SCREEN_ROLE_PERMISSION"), server.getRolePermission)
 	authRoutes.PUT("/role_permissions/:role_id/:permission_id", server.requirePermission("VIEW_SCREEN_ROLE_PERMISSION"), server.updateRolePermission)
 	authRoutes.DELETE("/role_permissions/:role_id/:permission_id", server.requirePermission("VIEW_SCREEN_ROLE_PERMISSION"), server.deleteRolePermission)
