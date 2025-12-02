@@ -14,6 +14,7 @@ type Querier interface {
 	AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error)
 	AddRoleForUser(ctx context.Context, arg AddRoleForUserParams) (UserRole, error)
 	CountPermissions(ctx context.Context) (int64, error)
+	CountRolePermissions(ctx context.Context) (int64, error)
 	CountRoles(ctx context.Context) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
@@ -28,6 +29,7 @@ type Querier interface {
 	DeleteEntry(ctx context.Context, id int64) error
 	DeletePermission(ctx context.Context, id int32) error
 	DeleteRole(ctx context.Context, id int32) error
+	DeleteRolePermission(ctx context.Context, arg DeleteRolePermissionParams) error
 	DeleteTransfer(ctx context.Context, id int64) error
 	GetAccount(ctx context.Context, id int64) (Account, error)
 	GetAccountForUpdate(ctx context.Context, id int64) (Account, error)
@@ -35,6 +37,7 @@ type Querier interface {
 	GetPermission(ctx context.Context, id int32) (Permission, error)
 	GetPermissionsForUser(ctx context.Context, userID int32) ([]string, error)
 	GetRole(ctx context.Context, id int32) (Role, error)
+	GetRolePermission(ctx context.Context, arg GetRolePermissionParams) (RolePermission, error)
 	GetRolesForUser(ctx context.Context, userID int32) ([]Role, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	GetTransfer(ctx context.Context, id int64) (Transfer, error)
@@ -42,6 +45,7 @@ type Querier interface {
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error)
 	ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entry, error)
 	ListPermissions(ctx context.Context, arg ListPermissionsParams) ([]Permission, error)
+	ListRolePermissions(ctx context.Context, arg ListRolePermissionsParams) ([]RolePermission, error)
 	ListRoles(ctx context.Context, arg ListRolesParams) ([]Role, error)
 	ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfer, error)
 	ListUserRoles(ctx context.Context, arg ListUserRolesParams) ([]UserRole, error)
@@ -51,6 +55,7 @@ type Querier interface {
 	UpdateEntry(ctx context.Context, arg UpdateEntryParams) (Entry, error)
 	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error)
 	UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error)
+	UpdateRolePermission(ctx context.Context, arg UpdateRolePermissionParams) (RolePermission, error)
 	UpdateTransfer(ctx context.Context, arg UpdateTransferParams) (Transfer, error)
 }
 

@@ -81,6 +81,21 @@ func (mr *MockStoreMockRecorder) CountPermissions(arg0 interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountPermissions", reflect.TypeOf((*MockStore)(nil).CountPermissions), arg0)
 }
 
+// CountRolePermissions mocks base method.
+func (m *MockStore) CountRolePermissions(arg0 context.Context) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountRolePermissions", arg0)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountRolePermissions indicates an expected call of CountRolePermissions.
+func (mr *MockStoreMockRecorder) CountRolePermissions(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountRolePermissions", reflect.TypeOf((*MockStore)(nil).CountRolePermissions), arg0)
+}
+
 // CountRoles mocks base method.
 func (m *MockStore) CountRoles(arg0 context.Context) (int64, error) {
 	m.ctrl.T.Helper()
@@ -287,6 +302,20 @@ func (mr *MockStoreMockRecorder) DeleteRole(arg0, arg1 interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRole", reflect.TypeOf((*MockStore)(nil).DeleteRole), arg0, arg1)
 }
 
+// DeleteRolePermission mocks base method.
+func (m *MockStore) DeleteRolePermission(arg0 context.Context, arg1 db.DeleteRolePermissionParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteRolePermission", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteRolePermission indicates an expected call of DeleteRolePermission.
+func (mr *MockStoreMockRecorder) DeleteRolePermission(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRolePermission", reflect.TypeOf((*MockStore)(nil).DeleteRolePermission), arg0, arg1)
+}
+
 // DeleteTransfer mocks base method.
 func (m *MockStore) DeleteTransfer(arg0 context.Context, arg1 int64) error {
 	m.ctrl.T.Helper()
@@ -389,6 +418,21 @@ func (m *MockStore) GetRole(arg0 context.Context, arg1 int32) (db.Role, error) {
 func (mr *MockStoreMockRecorder) GetRole(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRole", reflect.TypeOf((*MockStore)(nil).GetRole), arg0, arg1)
+}
+
+// GetRolePermission mocks base method.
+func (m *MockStore) GetRolePermission(arg0 context.Context, arg1 db.GetRolePermissionParams) (db.RolePermission, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRolePermission", arg0, arg1)
+	ret0, _ := ret[0].(db.RolePermission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRolePermission indicates an expected call of GetRolePermission.
+func (mr *MockStoreMockRecorder) GetRolePermission(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRolePermission", reflect.TypeOf((*MockStore)(nil).GetRolePermission), arg0, arg1)
 }
 
 // GetRolesForUser mocks base method.
@@ -494,6 +538,21 @@ func (m *MockStore) ListPermissions(arg0 context.Context, arg1 db.ListPermission
 func (mr *MockStoreMockRecorder) ListPermissions(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPermissions", reflect.TypeOf((*MockStore)(nil).ListPermissions), arg0, arg1)
+}
+
+// ListRolePermissions mocks base method.
+func (m *MockStore) ListRolePermissions(arg0 context.Context, arg1 db.ListRolePermissionsParams) ([]db.RolePermission, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRolePermissions", arg0, arg1)
+	ret0, _ := ret[0].([]db.RolePermission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListRolePermissions indicates an expected call of ListRolePermissions.
+func (mr *MockStoreMockRecorder) ListRolePermissions(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolePermissions", reflect.TypeOf((*MockStore)(nil).ListRolePermissions), arg0, arg1)
 }
 
 // ListRoles mocks base method.
@@ -643,6 +702,21 @@ func (m *MockStore) UpdateRole(arg0 context.Context, arg1 db.UpdateRoleParams) (
 func (mr *MockStoreMockRecorder) UpdateRole(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRole", reflect.TypeOf((*MockStore)(nil).UpdateRole), arg0, arg1)
+}
+
+// UpdateRolePermission mocks base method.
+func (m *MockStore) UpdateRolePermission(arg0 context.Context, arg1 db.UpdateRolePermissionParams) (db.RolePermission, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateRolePermission", arg0, arg1)
+	ret0, _ := ret[0].(db.RolePermission)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateRolePermission indicates an expected call of UpdateRolePermission.
+func (mr *MockStoreMockRecorder) UpdateRolePermission(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRolePermission", reflect.TypeOf((*MockStore)(nil).UpdateRolePermission), arg0, arg1)
 }
 
 // UpdateTransfer mocks base method.
