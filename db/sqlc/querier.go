@@ -13,6 +13,7 @@ import (
 type Querier interface {
 	AddAccountBalance(ctx context.Context, arg AddAccountBalanceParams) (Account, error)
 	AddRoleForUser(ctx context.Context, arg AddRoleForUserParams) (UserRole, error)
+	CountPermissions(ctx context.Context) (int64, error)
 	CountRoles(ctx context.Context) (int64, error)
 	CountUsers(ctx context.Context) (int64, error)
 	CreateAccount(ctx context.Context, arg CreateAccountParams) (Account, error)
@@ -25,11 +26,13 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAccount(ctx context.Context, id int64) error
 	DeleteEntry(ctx context.Context, id int64) error
+	DeletePermission(ctx context.Context, id int32) error
 	DeleteRole(ctx context.Context, id int32) error
 	DeleteTransfer(ctx context.Context, id int64) error
 	GetAccount(ctx context.Context, id int64) (Account, error)
 	GetAccountForUpdate(ctx context.Context, id int64) (Account, error)
 	GetEntry(ctx context.Context, id int64) (Entry, error)
+	GetPermission(ctx context.Context, id int32) (Permission, error)
 	GetPermissionsForUser(ctx context.Context, userID int32) ([]string, error)
 	GetRole(ctx context.Context, id int32) (Role, error)
 	GetRolesForUser(ctx context.Context, userID int32) ([]Role, error)
@@ -38,6 +41,7 @@ type Querier interface {
 	GetUser(ctx context.Context, username string) (User, error)
 	ListAccounts(ctx context.Context, arg ListAccountsParams) ([]Account, error)
 	ListEntries(ctx context.Context, arg ListEntriesParams) ([]Entry, error)
+	ListPermissions(ctx context.Context, arg ListPermissionsParams) ([]Permission, error)
 	ListRoles(ctx context.Context, arg ListRolesParams) ([]Role, error)
 	ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfer, error)
 	ListUserRoles(ctx context.Context, arg ListUserRolesParams) ([]UserRole, error)
@@ -45,6 +49,7 @@ type Querier interface {
 	RemoveRoleForUser(ctx context.Context, arg RemoveRoleForUserParams) error
 	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error)
 	UpdateEntry(ctx context.Context, arg UpdateEntryParams) (Entry, error)
+	UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error)
 	UpdateRole(ctx context.Context, arg UpdateRoleParams) (Role, error)
 	UpdateTransfer(ctx context.Context, arg UpdateTransferParams) (Transfer, error)
 }

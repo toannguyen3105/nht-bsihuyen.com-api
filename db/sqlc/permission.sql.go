@@ -10,6 +10,17 @@ import (
 	"database/sql"
 )
 
+const countPermissions = `-- name: CountPermissions :one
+SELECT count(*) FROM permissions
+`
+
+func (q *Queries) CountPermissions(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countPermissions)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createPermission = `-- name: CreatePermission :one
 INSERT INTO permissions (
   name,
@@ -26,6 +37,104 @@ type CreatePermissionParams struct {
 
 func (q *Queries) CreatePermission(ctx context.Context, arg CreatePermissionParams) (Permission, error) {
 	row := q.db.QueryRowContext(ctx, createPermission, arg.Name, arg.Description)
+	var i Permission
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const deletePermission = `-- name: DeletePermission :exec
+DELETE FROM permissions
+WHERE id = $1
+`
+
+func (q *Queries) DeletePermission(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deletePermission, id)
+	return err
+}
+
+const getPermission = `-- name: GetPermission :one
+SELECT id, name, description, created_at, updated_at FROM permissions
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetPermission(ctx context.Context, id int32) (Permission, error) {
+	row := q.db.QueryRowContext(ctx, getPermission, id)
+	var i Permission
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const listPermissions = `-- name: ListPermissions :many
+SELECT id, name, description, created_at, updated_at FROM permissions
+ORDER BY id
+LIMIT $1
+OFFSET $2
+`
+
+type ListPermissionsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListPermissions(ctx context.Context, arg ListPermissionsParams) ([]Permission, error) {
+	rows, err := q.db.QueryContext(ctx, listPermissions, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Permission{}
+	for rows.Next() {
+		var i Permission
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updatePermission = `-- name: UpdatePermission :one
+UPDATE permissions
+SET 
+    name = COALESCE($1, name),
+    description = COALESCE($2, description),
+    updated_at = now()
+WHERE id = $3
+RETURNING id, name, description, created_at, updated_at
+`
+
+type UpdatePermissionParams struct {
+	Name        sql.NullString `json:"name"`
+	Description sql.NullString `json:"description"`
+	ID          int32          `json:"id"`
+}
+
+func (q *Queries) UpdatePermission(ctx context.Context, arg UpdatePermissionParams) (Permission, error) {
+	row := q.db.QueryRowContext(ctx, updatePermission, arg.Name, arg.Description, arg.ID)
 	var i Permission
 	err := row.Scan(
 		&i.ID,
