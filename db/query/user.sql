@@ -11,3 +11,6 @@ WHERE username = $1 LIMIT 1;
 SELECT * FROM users
 ORDER BY username
 LIMIT $1 OFFSET $2;
+
+-- name: CountUsers :one
+SELECT count(*) FROM users;

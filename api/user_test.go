@@ -363,6 +363,10 @@ func TestListUsers(t *testing.T) {
 					ListUsers(gomock.Any(), gomock.Eq(arg)).
 					Times(1).
 					Return(users, nil)
+				store.EXPECT().
+					CountUsers(gomock.Any()).
+					Times(1).
+					Return(int64(n), nil)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)

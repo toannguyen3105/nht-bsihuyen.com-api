@@ -166,6 +166,15 @@ type listUsersRequest struct {
 	PageSize int32 `form:"page_size" binding:"required,min=10,max=100"`
 }
 
+type usersResponse struct {
+	Meta struct {
+		Page       int32 `json:"page"`
+		TotalPages int32 `json:"total_pages"`
+		TotalCount int64 `json:"total_count"`
+	} `json:"meta"`
+	Data []userResponse `json:"data"`
+}
+
 func (server *Server) listUsers(ctx *gin.Context) {
 	var req listUsersRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
@@ -184,9 +193,31 @@ func (server *Server) listUsers(ctx *gin.Context) {
 		return
 	}
 
-	rsp := make([]userResponse, len(users))
+	totalCount, err := server.store.CountUsers(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	totalPages := int32(totalCount) / req.PageSize
+	if int32(totalCount)%req.PageSize != 0 {
+		totalPages++
+	}
+
+	rsp := usersResponse{
+		Meta: struct {
+			Page       int32 `json:"page"`
+			TotalPages int32 `json:"total_pages"`
+			TotalCount int64 `json:"total_count"`
+		}{
+			Page:       req.PageID,
+			TotalPages: totalPages,
+			TotalCount: totalCount,
+		},
+		Data: make([]userResponse, len(users)),
+	}
 	for i, user := range users {
-		rsp[i] = newUserResponse(user)
+		rsp.Data[i] = newUserResponse(user)
 	}
 
 	ctx.JSON(http.StatusOK, successResponse("List users successfully", rsp))
