@@ -10,6 +10,17 @@ import (
 	"database/sql"
 )
 
+const countRoles = `-- name: CountRoles :one
+SELECT count(*) FROM roles
+`
+
+func (q *Queries) CountRoles(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, countRoles)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createRole = `-- name: CreateRole :one
 INSERT INTO roles (
   name,

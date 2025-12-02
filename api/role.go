@@ -93,6 +93,15 @@ type listRolesRequest struct {
 	PageSize int32 `form:"page_size" binding:"required,min=10,max=100"`
 }
 
+type rolesResponse struct {
+	Meta struct {
+		Page       int32 `json:"page"`
+		TotalPages int32 `json:"total_pages"`
+		TotalCount int64 `json:"total_count"`
+	} `json:"meta"`
+	Data []roleResponse `json:"data"`
+}
+
 func (server *Server) listRoles(ctx *gin.Context) {
 	var req listRolesRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
@@ -111,9 +120,31 @@ func (server *Server) listRoles(ctx *gin.Context) {
 		return
 	}
 
-	rsp := make([]roleResponse, len(roles))
+	totalCount, err := server.store.CountRoles(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	totalPages := int32(totalCount) / req.PageSize
+	if int32(totalCount)%req.PageSize != 0 {
+		totalPages++
+	}
+
+	rsp := rolesResponse{
+		Meta: struct {
+			Page       int32 `json:"page"`
+			TotalPages int32 `json:"total_pages"`
+			TotalCount int64 `json:"total_count"`
+		}{
+			Page:       req.PageID,
+			TotalPages: totalPages,
+			TotalCount: totalCount,
+		},
+		Data: make([]roleResponse, len(roles)),
+	}
 	for i, role := range roles {
-		rsp[i] = newRoleResponse(role)
+		rsp.Data[i] = newRoleResponse(role)
 	}
 
 	ctx.JSON(http.StatusOK, successResponse("Roles retrieved successfully", rsp))
