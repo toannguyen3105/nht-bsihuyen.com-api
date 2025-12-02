@@ -27,6 +27,17 @@ type Entry struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type Medicine struct {
+	ID          int32          `json:"id"`
+	Name        string         `json:"name"`
+	Unit        interface{}    `json:"unit"`
+	Price       string         `json:"price"`
+	Stock       int32          `json:"stock"`
+	Description sql.NullString `json:"description"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+}
+
 type Permission struct {
 	ID          int32          `json:"id"`
 	Name        string         `json:"name"`

@@ -38,6 +38,7 @@ type Querier interface {
 	ListRoles(ctx context.Context, arg ListRolesParams) ([]Role, error)
 	ListTransfers(ctx context.Context, arg ListTransfersParams) ([]Transfer, error)
 	ListUserRoles(ctx context.Context, arg ListUserRolesParams) ([]UserRole, error)
+	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
 	RemoveRoleForUser(ctx context.Context, arg RemoveRoleForUserParams) error
 	UpdateAccount(ctx context.Context, arg UpdateAccountParams) (Account, error)
 	UpdateEntry(ctx context.Context, arg UpdateEntryParams) (Entry, error)

@@ -192,8 +192,8 @@ func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
 
 	require.Equal(t, "success", apiResponse.Status)
 
-	var gotUser db.User
-	// Unmarshal the Data field into db.User
+	var gotUser userResponse
+	// Unmarshal the Data field into userResponse
 	jsonData, err := json.Marshal(apiResponse.Data)
 	require.NoError(t, err)
 	err = json.Unmarshal(jsonData, &gotUser)
@@ -202,5 +202,4 @@ func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
 	require.Equal(t, user.Username, gotUser.Username)
 	require.Equal(t, user.FullName, gotUser.FullName)
 	require.Equal(t, user.Email, gotUser.Email)
-	require.Empty(t, gotUser.HashedPassword)
 }
