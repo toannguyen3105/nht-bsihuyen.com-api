@@ -11,7 +11,8 @@ FROM alpine:3.19
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY db/migration ./db/migration
-COPY app.env.sample ./app.env
+# app.env will be mounted via volume in production
+
 
 EXPOSE 8080
 CMD ["/app/main"]

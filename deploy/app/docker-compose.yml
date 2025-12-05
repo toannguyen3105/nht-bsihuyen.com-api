@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=\${DB_USER}
+      - POSTGRES_PASSWORD=\${DB_PASSWORD}
+      - POSTGRES_DB=\${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - default
+
+  api:
+    image: ghcr.io/toannguyen3105/nht-bsihuyen.com-api:latest # Adjust image name if different
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - app.env
+    labels:
+      - "traefik.enable=true"
+      # HTTP Router (Redirect to HTTPS)
+      - "traefik.http.routers.api-http.rule=Host(`api.bshuyen.io.vn`)"
+      - "traefik.http.routers.api-http.entrypoints=web"
+      - "traefik.http.routers.api-http.middlewares=https-redirect"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      # HTTPS Router
+      - "traefik.http.routers.api.rule=Host(`api.bshuyen.io.vn`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=myresolver"
+    networks:
+      - default
+      - web_network
+
+volumes:
+  postgres_data:
+
+networks:
+  web_network:
+    external: true
