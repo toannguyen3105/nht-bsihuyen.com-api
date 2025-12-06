@@ -23,7 +23,7 @@ services:
       - backend
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nht-api.rule=Host(`api.nht-bsihuyen.com`)"
+      - "traefik.http.routers.nht-api.rule=Host(`api.bshuyen.io.vn`)"
       - "traefik.http.routers.nht-api.entrypoints=websecure"
       - "traefik.http.routers.nht-api.tls.certresolver=myresolver"
       - "traefik.http.services.nht-api.loadbalancer.server.port=8080"

@@ -1,36 +1,36 @@
 version: "3.8"
 
 services:
-  db:
+  postgres:
     image: postgres:16-alpine
+    container_name: nht_postgres
     restart: always
-    environment:
-      - POSTGRES_USER=\${DB_USER}
-      - POSTGRES_PASSWORD=\${DB_PASSWORD}
-      - POSTGRES_DB=\${DB_NAME}
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - default
 
   api:
-    image: ghcr.io/toannguyen3105/nht-bsihuyen.com-api:latest # Adjust image name if different
+    image: ghcr.io/toannguyen3105/nht-bsihuyen.com-api:main
+    container_name: nht_api
     restart: always
     depends_on:
-      - db
+      - postgres
     env_file:
-      - app.env
+      - .env
     labels:
       - "traefik.enable=true"
       # HTTP Router (Redirect to HTTPS)
-      - "traefik.http.routers.api-http.rule=Host(`api.bshuyen.io.vn`)"
-      - "traefik.http.routers.api-http.entrypoints=web"
-      - "traefik.http.routers.api-http.middlewares=https-redirect"
+      - "traefik.http.routers.nht-api-http.rule=Host(`api.bshuyen.io.vn`)"
+      - "traefik.http.routers.nht-api-http.entrypoints=web"
+      - "traefik.http.routers.nht-api-http.middlewares=https-redirect"
       - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
       # HTTPS Router
-      - "traefik.http.routers.api.rule=Host(`api.bshuyen.io.vn`)"
-      - "traefik.http.routers.api.entrypoints=websecure"
-      - "traefik.http.routers.api.tls.certresolver=myresolver"
+      - "traefik.http.routers.nht-api.rule=Host(`api.bshuyen.io.vn`)"
+      - "traefik.http.routers.nht-api.entrypoints=websecure"
+      - "traefik.http.routers.nht-api.tls.certresolver=myresolver"
     networks:
       - default
       - web_network
