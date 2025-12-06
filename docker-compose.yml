@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nht_api
+    restart: always
+    environment:
+      - DB_DRIVER=postgres
+      - DB_SOURCE=postgresql://postgres:password@postgres:5432/nht_api?sslmode=disable
+      - SERVER_ADDRESS=0.0.0.0:8080
+      - TOKEN_SYMMETRIC_KEY=12345678901234567890123456789012 # CHANGE THIS
+      - ACCESS_TOKEN_DURATION=15m
+      - REFRESH_TOKEN_DURATION=24h
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - web_network
+      - backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nht-api.rule=Host(`api.nht-bsihuyen.com`)"
+      - "traefik.http.routers.nht-api.entrypoints=websecure"
+      - "traefik.http.routers.nht-api.tls.certresolver=myresolver"
+      - "traefik.http.services.nht-api.loadbalancer.server.port=8080"
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: nht_postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password # CHANGE THIS
+      - POSTGRES_DB=nht_api
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+networks:
+  web_network:
+    external: true
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
